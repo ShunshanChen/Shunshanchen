@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <script src="d3.js"></script>
+</head>
+<body>
+    <div id="chart"></div>
+	<script src="charts.js"></script>
+    <script>
+
+        function barChart(data,columnInUse,fillColor){ 
+        var svg = d3.select("#chart")
+        .append("svg")
+        .attr("width",400)
+        .attr("height",400)
+
+        var yScale = d3.scaleLinear()
+        .domain([0,20])
+        .range([0,300])
+
+        svg.selectAll("rect")
+        .data(set1)
+        .enter()
+        .append("rect")
+        .attr("width",10)
+        .attr("height", function(d) { return  yScale(d[columnInUse]); } )
+        .attr("y",0)
+        .attr("x", function(d,i) { return i*10; } )
+        .attr("y", function(d) { return 300-yScale(d[columnInUse]); } )
+        .attr("fill",fillColor)
+        
+        svg.append("text").text(columnInUse).attr("x",10).attr("y",10)
+
+
+        }
+
+        barChart(set1,"x","red")
+        barChart(set1,"y","blue")
+
+        function barChart(set2,columnInUse,fillColor){ 
+        var svg = d3.select("#chart")
+        .append("svg")
+        .attr("width",400)
+        .attr("height",400)
+
+        var yScale = d3.scaleLinear()
+        .domain([0,20])
+        .range([0,300])
+
+        svg.selectAll("rect")
+        .data(set2)
+        .enter()
+        .append("rect")
+        .attr("width",10)
+        .attr("height", function(d) { return  yScale(d[columnInUse]); } )
+        .attr("y",0)
+        .attr("x", function(d,i) { return i*10; } )
+        .attr("y", function(d) { return 300-yScale(d[columnInUse]); } )
+        .attr("fill",fillColor)
+        
+        svg.append("text").text(columnInUse).attr("x",10).attr("y",10)
+
+
+        }
+
+        barChart(set2,"x","yellow")
+        barChart(set2,"y","blue")
+
+        function barChart(set3,columnInUse,fillColor){ 
+        var svg = d3.select("#chart")
+        .append("svg")
+        .attr("width",400)
+        .attr("height",400)
+
+        var yScale = d3.scaleLinear()
+        .domain([0,20])
+        .range([0,300])
+
+        svg.selectAll("rect")
+        .data(set3)
+        .enter()
+        .append("rect")
+        .attr("width",10)
+        .attr("height", function(d) { return  yScale(d[columnInUse]); } )
+        .attr("y",0)
+        .attr("x", function(d,i) { return i*10; } )
+        .attr("y", function(d) { return 300-yScale(d[columnInUse]); } )
+        .attr("fill",fillColor)
+        
+        svg.append("text").text(columnInUse).attr("x",10).attr("y",10)
+
+
+        }
+
+        barChart(set3,"x","yellow")
+        barChart(set3,"y","green")
+
+        function barChart(set4,columnInUse,fillColor){ 
+        var svg = d3.select("#chart")
+        .append("svg")
+        .attr("width",400)
+        .attr("height",400)
+
+        var yScale = d3.scaleLinear()
+        .domain([0,20])
+        .range([0,300])
+
+        svg.selectAll("rect")
+        .data(set4)
+        .enter()
+        .append("rect")
+        .attr("width",10)
+        .attr("height", function(d) { return  yScale(d[columnInUse]); } )
+        .attr("y",0)
+        .attr("x", function(d,i) { return i*10; } )
+        .attr("y", function(d) { return 300-yScale(d[columnInUse]); } )
+        .attr("fill",fillColor)
+        
+        svg.append("text").text(columnInUse).attr("x",10).attr("y",10)
+
+
+        }
+
+        barChart(set4,"x","red")
+        barChart(set4,"y","pink")
+        
+
+        
+
+
+</script>
+
+
+
+</body>
+</html>
