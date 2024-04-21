@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <meta charset="utf-8">
+    <title>Display a popup on click</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
+    <style>
+        body { 
+            background-color: black;
+        }
+
+        .dots-container {
+            position: absolute; 
+            z-index: 80;
+            top:15%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+
+        .dot {
+            margin-right: 8px; 
+            border-radius: 50%;
+            background-color: white;
+        }
+
+       
+        .dot-text {
+            color: rgba(199, 199, 199, 0.521);
+            margin-right: 20px;
+            font: 67px sans-serif;
+            font-size: 15px;
+        }
+       
+        .header-text {
+            color: white;
+            font-weight: bold;
+            margin-right: 15px; 
+            font: 10px 'Normal', sans-serif;
+            font-size: 12px;
+        }
+
+        #points-container {
+         position: fixed;
+         bottom: 20px;
+         right: 20px;
+         display: flex;
+         align-items: flex-end; 
+        }
+
+        #title{ 
+            position: absolute; 
+            top: 2%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            text-align: center;
+            color: white; 
+            background-color: rgba(21, 22, 22, 0.5);
+            border-radius: 50%;
+            font: 350% 'Impact', sans-serif;
+        }
+
+        #description{ 
+            position: absolute; 
+            top: 2%;
+            left: 5%;
+            width:20%;
+            z-index: 60;
+            text-align: left;
+            color: white; 
+            background-color: rgba(21, 22, 22, 0.5);
+            border-radius: 50%;
+            font: 80% 'Impact', sans-serif;
+        }
+
+        
+        .mapboxgl-popup {
+            max-width: 400px;
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        }
+        #popup{
+            width:50%;
+            position: absolute; top: 0; bottom: 0;        
+            left:50%;
+           
+        }
+
+        #map{ z-index: 1;
+            position: relative;
+            width: 100%;
+            height: 100vh; 
+            transform: scale(0.8); 
+            border:2px solid rgb(255, 255, 255);
+            border-radius: 30px;
+            margin-bottom: 8%; 
+            
+            }
+            #sat-map-container { 
+            position: absolute;  
+            width: 25%;
+            height: 40vh; 
+            top:57%;
+            right:6.5%;
+            transform: scale(0.5); 
+            z-index: 11; 
+            }
+            
+            #sat-map {
+            width: 100%;
+            height: 100%;
+            border:2px solid rgb(255, 255, 255);
+            border-radius: 30px;
+            
+        }
+
+        #sat-map-title { 
+            position: absolute;
+            top:63%; 
+            right: 12%;
+            color: white;
+            font-family: 'Impact', sans-serif;
+            font-size: 130%;  
+            z-index: 10; 
+        
+        }
+
+        #fall-map-container { 
+            position: absolute;  
+            width: 100%;
+            height: 100vh; 
+            transform: scale(0.8); 
+            margin-bottom: 5%; 
+            }
+            
+            #fall-map {
+            width: 100%;
+            height: 80%;
+            top:100%;
+            border:2px solid rgb(255, 255, 255);
+            border-radius: 30px;
+            
+        }
+
+        #fall-map-title { 
+            position: absolute;
+            top: calc(50vh + 148%);  
+            left: 50%;
+            transform: translateX(-50%); 
+            color: white;
+            font-family: 'Impact', sans-serif;
+            font-size: 200%;  
+            z-index: 10; 
+        
+        }
+
+       
+
+        #search-bar {
+            z-index: 2;
+            position: absolute;
+            bottom: 20px;
+            left: 50%; 
+            transform: translateX(-50%); 
+            height: 4%;
+            width: 15%;
+            border: 2px solid rgb(255, 255, 255);
+            border-radius: 30px;
+        
+        }
+
+        #chart-title { 
+            position: absolute;
+            top: calc(50vh + 60%);  
+            left: 50%;
+            transform: translateX(-50%); 
+            color: white;
+            font-family: 'Impact', sans-serif;
+            font-size: 200%;  
+            z-index: 10; 
+        
+        }
+
+     
+        #chart{
+            position: absolute;
+            top: 120%;
+            left: 50%; 
+            transform: translateX(-50%); 
+
+        }
+
+    #status-dots-container {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.status-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-text {
+    color: white;
+    margin-right: 20px;
+    font-size: 20px;
+}
+
+
+
+
+
+       
+    </style>
+</head>
+<body>
+    <div id="title">METEORITE LANDING ON EARTH </div>
+    <div class="dots-container"> <span class="header-text">Mass(g):</span></div>
+    <div id="points-container"></div>
+    <script src="script.js"></script>
+    <div id="yeardot"></div>
+
+    <input type="text" id="search-bar" placeholder="Search Year(860-2013)..."> 
+    <div id="map"></div>
+    <div id="popup"></div>
+    <div id="sat-map-title">Corresponding Satellite Map</div>
+    <div id="description">Welcome to our website, where we visually represent interactive meteorite landings based on NASA's extensive data collection*. Explore our interactive map and charts to discover where and when meteorites have landed, along with their properties.
+        <br> * https://catalog.data.gov/dataset/meteorite-landings 
+    </div>
+    <div id="sat-map-container">
+        <div id="sat-map"></div>
+    </div>
+    <div id="status-dots-container"> </div>
+
+    <div id="fall-map-title">Found/Fell Map</div>
+    <div id="fall-map-container">
+        <div id="fall-map"></div>
+    </div>
+    <div id="barChartContainer"></div>
+    <div id="chart-title">All of the known meteorites landing on Earth</div>
+    
+    <div id="chart"></div>
+    <script src="charts.js"></script>
+    <script>
+
+const statusData = [
+    { text: "Found", color: "rgb(99, 95, 155)" },
+    { text: "Fell", color: "rgb(238, 160, 58)" }
+];
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const mapContainer = document.getElementById('fall-map');
+    const container = document.createElement('div');
+    container.id = 'status-dots-container';
+    container.style.position = 'absolute';
+    container.style.bottom = '95%';
+    container.style.left = '45%';
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    mapContainer.appendChild(container);
+
+    statusData.forEach((status) => {
+        const dot = document.createElement('div');
+        dot.style.width = '20px';
+        dot.style.height = '20px';
+        dot.style.borderRadius = '50%';
+        dot.style.backgroundColor = status.color;
+        dot.style.marginRight = '8px';
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = status.text;
+        textSpan.style.color = 'white';
+        textSpan.style.marginRight = '20px';
+        textSpan.style.font = 'normal 20px sans-serif';
+        textSpan.style.color = 'rgba(199, 199, 199, 0.521)';
+
+        container.appendChild(dot);
+        container.appendChild(textSpan);
+    });
+});
+
+       
+       const sizes = [1.5, 2, 2.5, 3, 3.5, 4, 5, 5.5, 6, 6.5, 7, 10];
+
+        const texts = ['1,000', '5,000', '10,000', '20,000', '30,000', '50,000', '100,000', '200,000', '300,000', '400,000', '50,0000', '6,000,000'];
+
+        const container = document.querySelector('.dots-container');
+
+        sizes.forEach((size, index) => {
+            const dot = document.createElement('div');
+            dot.style.width = `${size}px`;
+            dot.style.height = `${size}px`;
+            dot.classList.add('dot');
+
+            const textSpan = document.createElement('span');
+            textSpan.textContent = texts[index];
+            textSpan.classList.add('dot-text');
+
+            container.appendChild(dot);
+            container.appendChild(textSpan);
+        });
+
+        const yearData = [
+        { period: "<1700", color: "rgb(55, 121, 235)" },
+        { period: "1700~1800", color: "rgb(74, 58, 217)" },
+        { period: "1800~1900", color: "rgb(179, 222, 161)" },
+        { period: "1900~1950", color: "rgb(177, 251, 240)" },
+        { period: "1950~2000", color: "rgb(251, 124, 40)" },
+        { period: "2000~2010", color: "rgb(255, 43, 0)" },
+        { period: ">2010", color: "rgb(249, 52, 183)" }
+    ];
+
+    const yearDotContainer = document.createElement('div');
+    yearDotContainer.style.position = 'absolute';
+    yearDotContainer.style.top = '12%';  
+    yearDotContainer.style.left = '50%';
+    yearDotContainer.style.transform = 'translateX(-50%)';
+    yearDotContainer.style.display = 'flex';
+    yearDotContainer.style.zIndex = '100'; 
+    yearDotContainer.style.alignItems = 'center';
+    document.body.appendChild(yearDotContainer);
+
+    yearData.forEach((data) => {
+        const dot = document.createElement('div');
+        dot.style.width = '10px';
+        dot.style.height = '10px';
+        dot.style.borderRadius = '50%';
+        dot.style.backgroundColor = data.color;
+        dot.style.marginRight = '8px';
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = data.period;
+        textSpan.style.color = 'white';
+        textSpan.style.marginRight = '20px';
+        textSpan.style.font = 'normal 12px sans-serif';
+        textSpan.style.color = 'rgba(199, 199, 199, 0.521)';
+
+        yearDotContainer.appendChild(dot);
+        yearDotContainer.appendChild(textSpan);
+    });
+
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYXN1a2F3dyIsImEiOiJjbHM3cHBzMTcxMzkxMmpvN2dnZGY5ZGNwIn0.DZOB2xQDDTaaXoJZdNo87w';
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/asukaww/cluef6vep02ei01nw4qdxabua',
+            center: [-99.107, 41.726],
+            zoom: 2
+        });
+
+
+        const satMap = new mapboxgl.Map({
+            container: 'sat-map',
+            style: 'mapbox://styles/asukaww/clsgf1fl103hb01p5ac35fznf',
+            center: [-102.95, 35.76667],
+            zoom: 14
+        });
+
+        const fallMap = new mapboxgl.Map({
+            container: 'fall-map',
+            style: 'mapbox://styles/asukaww/clv9ot16103jc01pk9f505gkc',
+            center: [-99.107, 41.726],
+            zoom: 4
+        });
+
+
+        map.on('load', () => {
+            
+            map.on('click', 'test1-70mskj', (e) => {
+
+                const coords = e.lngLat;const zoomLevel = 6; map.flyTo({center: coords, zoom: zoomLevel});
+                const clickedOnFeature = e.features[0];
+                const coordinates = clickedOnFeature.geometry.coordinates.slice();
+                console.log(e.features[0].properties);
+                
+                var name = e.features[0].properties.name;
+                var year = e.features[0].properties.year;
+                var GeoLocation = e.features[0].properties.GeoLocation;
+                var mass = e.features[0].properties['mass (g)'];
+                var recclass= e.features[0].properties.recclass;
+                
+                var popupText = name + ' ' + year + '<br>' + "GeoLocation: " + GeoLocation + '<br>'+ "Mass(g):"+ mass + '<br>' + "Recclass: " + recclass;          
+                satMap.setCenter(coordinates);
+                satMap.setZoom(16);
+                
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+                
+                new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(popupText)
+                    .addTo(map);
+    
+                    
+
+            
+            });
+
+
+
+            
+const searchBar = document.getElementById('search-bar');
+        searchBar.addEventListener('keyup', () => {
+            const searchText = searchBar.value.trim();
+            if (searchText === '') {
+                map.setFilter('test1-70mskj', ['!=', 'year', 0]);
+            } else {
+                const filter = ['==', 'year', parseInt(searchText)];
+                map.setFilter('test1-70mskj', filter);
+            }
+        });
+    });
+
+       
+    
+    </script>
+</body>
+</html>
